@@ -1,0 +1,59 @@
+<h2>{{$ctrl.title}}</h2>
+
+<md-content>
+    <h3>Liste des lecteurs UPnP/DLNA</h3>
+
+    <m1m-media-renderer
+            ng-repeat="renderer in $ctrl.mediaRenderers"
+            nf="renderer" ng-click="$ctrl.subscribe(renderer.id)"
+    >
+    </m1m-media-renderer>
+</md-content>
+
+<section>
+    <h3>Liste des serveurs UPnP/DLNA</h3>
+    <ul>
+
+        <li ng-repeat="server in $ctrl.mediaServers">
+            <p ng-dblclick="$ctrl.browse(server.id)"> {{server.name}} </p>
+        </li>
+
+    </ul>
+
+    <a ng-repeat="obj in $ctrl.directories" ng-dblclick="$ctrl.browse(obj.serverId, obj.directory)">
+        <img src="{{obj.iconURL}}" alt="{{obj.name}}">
+    </a>
+
+    <a ng-repeat="obj in $ctrl.medias" ng-dblclick="$ctrl.loadMedia($ctrl.mediaRenderers[1].id,obj.serverId, obj.mediaId)">
+        {{obj.title}}
+    </a>
+
+</section>
+
+<browser-display nf="{{$ctrl.directories}}">
+</browser-display>
+
+
+<!--
+<md-list flex>
+    <md-list-item ng-repeat="renderer in $ctrl.mediaRenderers">
+        <md-header>{{renderer.name}}</md-header>
+        <img ng-src="{{renderer.iconURL}}">
+    </md-list-item>
+</md-list>
+-->
+
+<!--
+{ "serverId": "105a27ce-077d-6b15-20df-867f28c44c95",
+"date": "2016-10-12", "title": "Sexy Broccoli Handsome Mr. Frog Jaltoid Games Animated",
+"icon": "images/media_icon.jpg",
+"mediaId": "/home/g/garcial/Téléchargements/Sexy Broccoli Handsome Mr. Frog Jaltoid Games Animated.mp4",
+"creator": "Unknown",
+"actors": [],
+"genres": [ "Unknown" ],
+"albumarturi": "",
+"description": "",
+"longdescription": "",
+"ressource": "http://152.77.82.67:1391/%25/34F8CBF9E537926140AD688E07F33362/Sexy%2520Broccoli%2520%2520Handsome%2520Mr.%2520Frog%2520%2520Jaltoid%2520Games%2520Animated.mp4",
+"class": "object.item.videoItem" }
+-->
