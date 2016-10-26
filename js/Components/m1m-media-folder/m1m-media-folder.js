@@ -1,19 +1,12 @@
-/**
- * Created by attalbin on 05/10/16.
- *
- */
-
-
 var angular    = require( "angular" ),
     CommModule  = require( "../../Services/CommModule.js" ),
-    template    = require( "./m1m-media-server.html" ),
-    modAngularMediaFolder      = require( "../m1m-media-folder/m1m-media-folder.js" )
+    template    = require( "./m1m-media-folder.html" )
     ;
 
-module.exports = "m1m-media-server-Module";
+module.exports = "m1m-media-folder-Module";
 
 function controller($scope, CommService) {
-    console.log( "On construit un server" );
+    console.log( "On construit un folder" );
     var ctrl = this;
 
     this.browse = function( mediaServerId, directoryId ) {
@@ -31,13 +24,10 @@ controller.$inject = ["$scope", "CommService"];
 
 angular .module     ( module.exports
                     , [CommModule
-                    , modAngularMediaFolder
                     ]
-                    )
-    .component  ( "m1mMediaServer", {
+)
+    .component  ( "m1mMediaFolder", {
         controller  : controller,
-        bindings    : {serv: "<"},
+        bindings    : {fold: "<"},
         template   : template
     });
-
-

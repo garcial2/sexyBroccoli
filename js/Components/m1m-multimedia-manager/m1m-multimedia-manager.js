@@ -3,9 +3,9 @@ var angular		        = require( "angular" ),
     utils         = require( "../../Services/utils.js" ),
     angularMaterial		= require( "angular-material" ),
     ngDraggable 		= require( "ng-draggable" ),
-    template            = require( "./m1m-multimedia-manager.html" );
-
-var  modAngularMediaRenderer   = require( "../m1m-media-renderer/m1m-media-renderer.js" );
+    template            = require( "./m1m-multimedia-manager.html" ),
+    modAngularMediaRenderer     = require( "../m1m-media-renderer/m1m-media-renderer.js" ),
+    modAngularMediaServer       = require( "../m1m-media-server/m1m-media-server.js" );
 
 module.exports = "m1m-multimedia-manager-Module";
 console.log( "Init of m1m-multimedia-manager-Module", CommModule, angularMaterial, ngDraggable);
@@ -46,7 +46,14 @@ function controller($scope, CommService) {
 }
 controller.$inject = ["$scope", "CommService"];
 
-angular .module     ( module.exports, [CommModule, angularMaterial, "ngDraggable", modAngularMediaRenderer] )
+angular .module     ( module.exports
+                    ,   [ CommModule
+                        , angularMaterial
+                        , "ngDraggable"
+                        , modAngularMediaRenderer
+                        , modAngularMediaServer
+                        ]
+                    )
         .component  ( "m1mMultimediaManager", {
             controller  : controller,
             bindings    : {title: "@"},

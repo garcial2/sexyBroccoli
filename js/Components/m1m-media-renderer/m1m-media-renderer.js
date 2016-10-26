@@ -47,6 +47,6 @@ controller.$inject = ["$scope", "CommService"];
 angular .module     ( module.exports, [CommModule] )
     .component  ( "m1mMediaRenderer", {
         controller  : controller,
-        bindings    : {nf: "<"},
+        bindings    : {rd: "<"},
         template   : template
     });
