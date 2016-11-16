@@ -10,7 +10,7 @@ var angular		        = require( "angular" ),
 module.exports = "m1m-multimedia-manager-Module";
 console.log( "Init of m1m-multimedia-manager-Module", CommModule, angularMaterial, ngDraggable);
 
-function controller($scope, CommService) {
+function controller($scope, CommService,$timeout, $mdSidenav) {
     var ctrl = this;
 
     console.log( "m1mMultimediaManager:", $scope, CommService );
@@ -43,8 +43,20 @@ function controller($scope, CommService) {
             console.log(e);
         });
     }
+
+	/* DESIGN FUNCTIONS */ 
+	$scope.toggleLeft = buildToggler('left');
+	$scope.toggleRight = buildToggler('right');
+
+	function buildToggler(componentId) {
+		return function() {
+			$mdSidenav(componentId).toggle();
+        	}
+    	}
+	/* END DESIGN FUNCTIONS */
+
 }
-controller.$inject = ["$scope", "CommService"];
+controller.$inject = ["$scope", "CommService", "$timeout", "$mdSidenav"];
 
 angular .module     ( module.exports
                     ,   [ CommModule
@@ -52,7 +64,7 @@ angular .module     ( module.exports
                         , "ngDraggable"
                         , modAngularMediaRenderer
                         , modAngularMediaServer
-                        ]
+                        , 'ngMaterial']
                     )
         .component  ( "m1mMultimediaManager", {
             controller  : controller,
