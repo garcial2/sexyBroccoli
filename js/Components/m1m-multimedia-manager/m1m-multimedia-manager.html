@@ -22,3 +22,52 @@
 <browser-display nf="{{$ctrl.directories}}">
 </browser-display>
 -->
+
+
+
+<div layout="column" style="height: 500px;" ng-cloak>
+
+    <section layout="row" flex>
+
+        <md-sidenav class="md-sidenav-left" md-component-id="left"
+                    md-disable-backdrop md-whiteframe="4">
+
+            <md-toolbar class="md-theme-dark">
+                <h1 class="md-toolbar-tools">Les serveurs --</h1>
+            </md-toolbar>
+
+            <md-content layout-margin>
+
+	<m1m-media-server ng-repeat="server in $ctrl.mediaServers" serv="server">
+    	</m1m-media-server>
+
+    	<md-button ng-repeat="obj in $ctrl.medias" ng-click="$ctrl.loadMedia($ctrl.mediaRenderers[1].id,obj.serverId, obj.mediaId)">
+        	<div>{{obj.title}} </div>
+    	</md-button>
+
+
+                <md-button ng-click="toggleLeft()" class="md-accent">
+                    Ne plus voir les serveurs
+                </md-button>
+            </md-content>
+
+        </md-sidenav>
+
+        <md-content flex layout-padding>
+
+            <div layout="column" layout-align="top left">
+
+                <div>
+                    <md-button ng-click="toggleLeft()" class="md-raised">
+                        Voir les serveurs
+                    </md-button>
+                </div>
+
+            </div>
+
+        </md-content>
+
+    </section>
+
+</div>
+
