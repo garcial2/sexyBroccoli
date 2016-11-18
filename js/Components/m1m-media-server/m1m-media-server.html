@@ -1,10 +1,12 @@
 <section>
     <h4 ng-dblclick="$ctrl.browse($ctrl.serv.id)">{{$ctrl.serv.name}}</h4>
 
-    <m1m-media-folder  ng-repeat="obj in $ctrl.directories" ng-dblclick="$ctrl.browse(obj.serverId, obj.directory)" fold="obj">
+    <m1m-media-folder  ng-repeat="obj in $ctrl.directories" ng-dblclick="$ctrl.browse(obj.serverId, obj.directory)" fold="obj" style="display:block">
     </m1m-media-folder>
 
+    <m1m-media-file ng-repeat="obj in $ctrl.medias" file="obj"> </m1m-media-file>
 </section>
+
 
 
 

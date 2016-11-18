@@ -31867,9 +31867,9 @@
 	    utils         = __webpack_require__( 12 ),
 	    angularMaterial		= __webpack_require__( 61 ),
 	    ngDraggable 		= __webpack_require__( 67 ),
-	    template            = __webpack_require__( 68 );
-
-	var  modAngularMediaRenderer   = __webpack_require__( 69 );
+	    template            = __webpack_require__( 68 ),
+	    modAngularMediaRenderer     = __webpack_require__( 69 ),
+	    modAngularMediaServer       = __webpack_require__( 71 );
 
 	module.exports = "m1m-multimedia-manager-Module";
 	console.log( "Init of m1m-multimedia-manager-Module", CommModule, angularMaterial, ngDraggable);
@@ -31884,7 +31884,7 @@
 	        $scope.$applyAsync(); // Mise à jour du rendu
 	    };
 
-	    this.browse = function( mediaServerId, directoryId ) {
+	    /*this.browse = function( mediaServerId, directoryId ) {
 	        CommService.browse( mediaServerId, directoryId ).then( function(data) {
 	            console.log( "Browse", mediaServerId, directoryId, "=>", data );
 	            ctrl.directories = data.directories;
@@ -31900,17 +31900,25 @@
 	            CommService.play(mediaRendererId);
 	            $scope.$applyAsync();
 	        });
-	    }
+	    }*/
 
 	    this.subscribe = function (mediaRendererId) {
+	        console.log("Suscribe to renderer,",mediaRendererId);
 	        return  utils.subscribeBrick(mediaRendererId, "eventUPnP",function (e) {
 	            console.log(e);
-	        });
+	    });
 	    }
 	}
 	controller.$inject = ["$scope", "CommService"];
 
-	angular .module     ( module.exports, [CommModule, angularMaterial, "ngDraggable", modAngularMediaRenderer] )
+	angular .module     ( module.exports
+	                    ,   [ CommModule
+	                        , angularMaterial
+	                        , "ngDraggable"
+	                        , modAngularMediaRenderer
+	                        , modAngularMediaServer
+	                        ]
+	                    )
 	        .component  ( "m1mMultimediaManager", {
 	            controller  : controller,
 	            bindings    : {title: "@"},
@@ -77935,7 +77943,7 @@
 /* 68 */
 /***/ function(module, exports) {
 
-	module.exports = "<h2>{{$ctrl.title}}</h2>\n\n<md-content>\n    <h3>Liste des lecteurs UPnP/DLNA</h3>\n\n    <m1m-media-renderer\n            ng-repeat=\"renderer in $ctrl.mediaRenderers\"\n            nf=\"renderer\" ng-click=\"$ctrl.subscribe(renderer.id)\"\n    >\n    </m1m-media-renderer>\n</md-content>\n\n<section>\n    <h3>Liste des serveurs UPnP/DLNA</h3>\n    <ul>\n\n        <li ng-repeat=\"server in $ctrl.mediaServers\">\n            <p ng-dblclick=\"$ctrl.browse(server.id)\"> {{server.name}} </p>\n        </li>\n\n    </ul>\n\n    <a ng-repeat=\"obj in $ctrl.directories\" ng-dblclick=\"$ctrl.browse(obj.serverId, obj.directory)\">\n        <img src=\"{{obj.iconURL}}\" alt=\"{{obj.name}}\">\n    </a>\n\n    <a ng-repeat=\"obj in $ctrl.medias\" ng-dblclick=\"$ctrl.loadMedia($ctrl.mediaRenderers[1].id,obj.serverId, obj.mediaId)\">\n        {{obj.title}}\n    </a>\n\n</section>\n\n<browser-display nf=\"{{$ctrl.directories}}\">\n</browser-display>\n\n\n<!--\n<md-list flex>\n    <md-list-item ng-repeat=\"renderer in $ctrl.mediaRenderers\">\n        <md-header>{{renderer.name}}</md-header>\n        <img ng-src=\"{{renderer.iconURL}}\">\n    </md-list-item>\n</md-list>\n-->\n\n<!--\n{ \"serverId\": \"105a27ce-077d-6b15-20df-867f28c44c95\",\n\"date\": \"2016-10-12\", \"title\": \"Sexy Broccoli Handsome Mr. Frog Jaltoid Games Animated\",\n\"icon\": \"images/media_icon.jpg\",\n\"mediaId\": \"/home/g/garcial/Téléchargements/Sexy Broccoli Handsome Mr. Frog Jaltoid Games Animated.mp4\",\n\"creator\": \"Unknown\",\n\"actors\": [],\n\"genres\": [ \"Unknown\" ],\n\"albumarturi\": \"\",\n\"description\": \"\",\n\"longdescription\": \"\",\n\"ressource\": \"http://152.77.82.67:1391/%25/34F8CBF9E537926140AD688E07F33362/Sexy%2520Broccoli%2520%2520Handsome%2520Mr.%2520Frog%2520%2520Jaltoid%2520Games%2520Animated.mp4\",\n\"class\": \"object.item.videoItem\" }\n-->"
+	module.exports = "<h2>{{$ctrl.title}}</h2>\n\n<md-content>\n    <h3>Liste des lecteurs UPnP/DLNA</h3>\n\n    <m1m-media-renderer\n            ng-repeat=\"renderer in $ctrl.mediaRenderers\"\n            rd=\"renderer\" ng-click=\"$ctrl.subscribe(renderer.id)\"\n    >\n    </m1m-media-renderer>\n</md-content>\n\n\n<section>\n    <h3>Liste des serveurs UPnP/DLNA</h3>\n\n    <m1m-media-server ng-repeat=\"server in $ctrl.mediaServers\" serv=\"server\">\n    </m1m-media-server>\n</section>\n\n<!--\n<browser-display nf=\"{{$ctrl.directories}}\">\n</browser-display>\n-->"
 
 /***/ },
 /* 69 */
@@ -77990,7 +77998,7 @@
 	angular .module     ( module.exports, [CommModule] )
 	    .component  ( "m1mMediaRenderer", {
 	        controller  : controller,
-	        bindings    : {nf: "<"},
+	        bindings    : {rd: "<"},
 	        template   : template
 	    });
 
@@ -77998,7 +78006,161 @@
 /* 70 */
 /***/ function(module, exports) {
 
-	module.exports = "<section>\n\n    <h3> LECTEUR : {{$ctrl.nf.name}}</h3>\n    <section>\n        <button ng-click=\"$ctrl.play()\">PLAY</button>\n        <button ng-click=\"$ctrl.pause()\">PAUSE</button>\n        <button ng-click=\"$ctrl.stop()\">STOP</button>\n\n    </section>\n\n</section>\n"
+	module.exports = "<section>\n\n    <h3> LECTEUR : {{$ctrl.rd.name}}</h3>\n    <section>\n        <button ng-click=\"$ctrl.play()\">PLAY</button>\n        <button ng-click=\"$ctrl.pause()\">PAUSE</button>\n        <button ng-click=\"$ctrl.stop()\">STOP</button>\n\n    </section>\n\n</section>\n"
+
+/***/ },
+/* 71 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Created by attalbin on 05/10/16.
+	 *
+	 */
+
+
+	var angular    = __webpack_require__( 8 ),
+	    CommModule  = __webpack_require__( 11 ),
+	    template    = __webpack_require__( 72 ),
+	    utils         = __webpack_require__( 12 ),
+	    modAngularMediaFolder      = __webpack_require__( 73 ),
+	    modAngularMediaFile      = __webpack_require__( 75 )
+	    ;
+
+	module.exports = "m1m-media-server-Module";
+
+	function controller($scope, CommService) {
+	    console.log( "On construit un server" );
+	    var ctrl = this;
+
+	    this.browse = function( mediaServerId, directoryId ) {
+	        CommService.browse( mediaServerId, directoryId ).then( function(data) {
+	            console.log( "Browse", mediaServerId, directoryId, "=>", data );
+	            ctrl.directories = data.directories;
+	            ctrl.medias = data.medias;
+	            $scope.$applyAsync();
+	        });
+	    }
+
+
+	    this.subscribe = function (mediaRendererId) {
+	        return utils.subscribeBrick(mediaRendererId, "eventUPnP", function (e) {
+	            console.log(e);
+	        });
+	    }
+
+	}
+
+	controller.$inject = ["$scope", "CommService"];
+
+	angular .module     ( module.exports
+	                    , [CommModule
+	                    , modAngularMediaFolder
+	                    , modAngularMediaFile
+	                    ]
+	                    )
+	    .component  ( "m1mMediaServer", {
+	        controller  : controller,
+	        bindings    : {serv: "<"},
+	        template   : template
+	    });
+
+
+
+
+/***/ },
+/* 72 */
+/***/ function(module, exports) {
+
+	module.exports = "<section>\n    <h4 ng-dblclick=\"$ctrl.browse($ctrl.serv.id)\">{{$ctrl.serv.name}}</h4>\n\n    <m1m-media-folder  ng-repeat=\"obj in $ctrl.directories\" ng-dblclick=\"$ctrl.browse(obj.serverId, obj.directory)\" fold=\"obj\" style=\"display:block\">\n    </m1m-media-folder>\n\n    <m1m-media-file ng-repeat=\"obj in $ctrl.medias\" file=\"obj\"> </m1m-media-file>\n</section>\n\n\n\n\n"
+
+/***/ },
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var angular    = __webpack_require__( 8 ),
+	    CommModule  = __webpack_require__( 11 ),
+	    template    = __webpack_require__( 74 )
+	    ;
+
+	module.exports = "m1m-media-folder-Module";
+
+	function controller($scope, CommService) {
+	    console.log( "On construit un folder" );
+	    var ctrl = this;
+
+	    this.browse = function( mediaServerId, directoryId ) {
+	        CommService.browse( mediaServerId, directoryId ).then( function(data) {
+	            console.log( "Browse", mediaServerId, directoryId, "=>", data );
+	            ctrl.directories = data.directories;
+	            ctrl.medias = data.medias;
+	            $scope.$applyAsync();
+	        });
+	    }
+
+	}
+
+	controller.$inject = ["$scope", "CommService"];
+
+	angular .module     ( module.exports
+	                    , [CommModule
+	                    ]
+	)
+	    .component  ( "m1mMediaFolder", {
+	        controller  : controller,
+	        bindings    : {fold: "<"},
+	        template   : template
+	    });
+
+/***/ },
+/* 74 */
+/***/ function(module, exports) {
+
+	module.exports = "<a ng-dblclick=\"$ctrl.browse($ctrl.fold.serverId, $ctrl.fold.directory)\">\n    <img src=\"{{$ctrl.fold.iconURL}}\" alt=\"{{$ctrl.fold.name}}\">\n</a>"
+
+/***/ },
+/* 75 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var angular    = __webpack_require__( 8 ),
+	    CommModule  = __webpack_require__( 11 ),
+	    template    = __webpack_require__( 76 )
+	    ;
+
+	module.exports = "m1m-media-file-Module";
+
+	function controller($scope, CommService) {
+	    console.log( "On construit un file" );
+	    var ctrl = this;
+	    this.mediaRenderers = CommService.mediaRenderers;
+
+	    this.loadMedia = function(mediaRendererId, mediaServerId, itemId){
+	        CommService.loadMedia(mediaRendererId,mediaServerId,itemId).then(function (data) {
+	            //var callb = function(obj){console.log(obj);}
+	            console.log( "Load media", mediaRendererId, mediaServerId, mediaServerId, itemId, "=>", data );
+	            CommService.play(mediaRendererId);
+	            $scope.$applyAsync();
+	        });
+	    }
+
+	}
+
+	controller.$inject = ["$scope", "CommService"];
+
+	angular .module     ( module.exports
+	    , [CommModule
+	    ]
+	)
+	    .component  ( "m1mMediaFile", {
+	        controller  : controller,
+	        bindings    : {file: "<"},
+	        template   : template
+	    });
+
+/***/ },
+/* 76 */
+/***/ function(module, exports) {
+
+	module.exports = "<a   ng-dblclick=\"$ctrl.loadMedia($ctrl.mediaRenderers[1].id,$ctrl.file.serverId, $ctrl.file.mediaId)\" style=\"display:block; color:darkslateblue\">\n    {{$ctrl.file.title}}\n</a>"
 
 /***/ }
 /******/ ]);

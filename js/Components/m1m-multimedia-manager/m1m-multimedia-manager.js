@@ -20,7 +20,7 @@ function controller($scope, CommService) {
         $scope.$applyAsync(); // Mise à jour du rendu
     };
 
-    this.browse = function( mediaServerId, directoryId ) {
+    /*this.browse = function( mediaServerId, directoryId ) {
         CommService.browse( mediaServerId, directoryId ).then( function(data) {
             console.log( "Browse", mediaServerId, directoryId, "=>", data );
             ctrl.directories = data.directories;
@@ -36,14 +36,16 @@ function controller($scope, CommService) {
             CommService.play(mediaRendererId);
             $scope.$applyAsync();
         });
-    }
+    }*/
 
     this.subscribe = function (mediaRendererId) {
+        console.log("Suscribe to renderer,",mediaRendererId);
         return  utils.subscribeBrick(mediaRendererId, "eventUPnP",function (e) {
             console.log(e);
-        });
+    });
     }
 }
+
 controller.$inject = ["$scope", "CommService"];
 
 angular .module     ( module.exports

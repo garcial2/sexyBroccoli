@@ -7,7 +7,9 @@
 var angular    = require( "angular" ),
     CommModule  = require( "../../Services/CommModule.js" ),
     template    = require( "./m1m-media-server.html" ),
-    modAngularMediaFolder      = require( "../m1m-media-folder/m1m-media-folder.js" )
+    utils         = require( "../../Services/utils.js" ),
+    modAngularMediaFolder      = require( "../m1m-media-folder/m1m-media-folder.js" ),
+    modAngularMediaFile      = require( "../m1m-media-file/m1m-media-file.js" )
     ;
 
 module.exports = "m1m-media-server-Module";
@@ -25,6 +27,13 @@ function controller($scope, CommService) {
         });
     }
 
+
+    this.subscribe = function (mediaRendererId) {
+        return utils.subscribeBrick(mediaRendererId, "eventUPnP", function (e) {
+            console.log(e);
+        });
+    }
+
 }
 
 controller.$inject = ["$scope", "CommService"];
@@ -32,6 +41,7 @@ controller.$inject = ["$scope", "CommService"];
 angular .module     ( module.exports
                     , [CommModule
                     , modAngularMediaFolder
+                    , modAngularMediaFile
                     ]
                     )
     .component  ( "m1mMediaServer", {
@@ -39,5 +49,3 @@ angular .module     ( module.exports
         bindings    : {serv: "<"},
         template   : template
     });
-
-

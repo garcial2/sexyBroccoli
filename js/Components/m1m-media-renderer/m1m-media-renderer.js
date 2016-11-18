@@ -35,14 +35,9 @@ function controller($scope, CommService) {
          $scope.$applyAsync();
          });
      }*/
-
-
-
 }
 
 controller.$inject = ["$scope", "CommService"];
-
-
 
 angular .module     ( module.exports, [CommModule] )
     .component  ( "m1mMediaRenderer", {
