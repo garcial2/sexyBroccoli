@@ -5,6 +5,7 @@ var angular		        = require( "angular" ),
     ngDraggable 		= require( "ng-draggable" ),
     template            = require( "./m1m-multimedia-manager.html" ),
     modAngularMediaRenderer     = require( "../m1m-media-renderer/m1m-media-renderer.js" ),
+    //modAngularFilAriane    = require( "../m1m-fil-ariane/m1m-fil-ariane.js" ),
     modAngularMediaServer       = require( "../m1m-media-server/m1m-media-server.js" );
 
 module.exports = "m1m-multimedia-manager-Module";
@@ -45,7 +46,7 @@ function controller($scope, CommService,$timeout, $mdSidenav) {
     });
     }
 
-	/* DESIGN FUNCTIONS */
+	/* DESIGN FUNCTIONS */ 
 	$scope.toggleLeft = buildToggler('left');
 	$scope.toggleRight = buildToggler('right');
 
@@ -58,7 +59,6 @@ function controller($scope, CommService,$timeout, $mdSidenav) {
 
 }
 
-
 controller.$inject = ["$scope", "CommService", "$timeout", "$mdSidenav"];
 
 angular .module     ( module.exports
@@ -67,6 +67,7 @@ angular .module     ( module.exports
                         , "ngDraggable"
                         , modAngularMediaRenderer
                         , modAngularMediaServer
+                        //, modAngularFilAriane
                         , 'ngMaterial']
                     )
         .component  ( "m1mMultimediaManager", {

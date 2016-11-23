@@ -5,15 +5,16 @@ var angular    = require( "angular" ),
 
 module.exports = "m1m-fil-ariane-Module";
 
-function controller($scope, CommService) {
+function controller($scope, CommService, breadcrumbs) {
     console.log( "On construit le fil d'ariane" );
     var ctrl = this;
+    $scope.breadcrumbs = breadcrumbs;
 }
 
-controller.$inject = ["$scope", "CommService"];
+controller.$inject = ["$scope", "CommService","breadcrumbs"];
 
 angular .module     ( module.exports
-    , [CommModule
+    , [CommModule, 'services.breadcrumbs'
     ]
 )
     .component  ( "m1mFilAriane", {
@@ -21,3 +22,5 @@ angular .module     ( module.exports
         bindings    : {file: "<"},
         template   : template
     });
+
+

@@ -2,9 +2,34 @@
 
     <h3> LECTEUR : {{$ctrl.rd.name}}</h3>
     <section>
-        <button ng-click="$ctrl.play()">PLAY</button>
-        <button ng-click="$ctrl.pause()">PAUSE</button>
-        <button ng-click="$ctrl.stop()">STOP</button>
+
+        <md-content style="display: inline-block!important;width: 30%">
+            <md-button ng-click="$ctrl.play()" class="md-fab" aria-label="play">
+                <md-icon md-svg-src="audio_play.svg"></md-icon>
+            </md-button>
+
+            <md-button ng-click="$ctrl.pause()" class="md-fab" aria-label="pause">
+                <md-icon md-svg-src="audio_pause.svg"></md-icon>
+            </md-button>
+            <md-button ng-click="$ctrl.stop()" class="md-fab" aria-label="stop">
+                <md-icon md-svg-src="audio_stop.svg"></md-icon>
+            </md-button>
+        </md-content>
+
+
+        <md-content style="display: inline-block!important;width: 40%">
+            <md-slider-container flex style="width: 90%;margin: 2px">
+                <md-input-container>
+                    <input flex type="number" min="0" max="100" ng-model="vol" aria-label="volume" aria-controls="volume-slider">
+                </md-input-container>
+                <md-slider ng-model="vol" min="0" max="100" aria-label="volume" id="volume-slider" class="md-accent"
+                           md-range></md-slider>
+                </md-slider>
+                <h5>Volume</h5>
+            </md-slider-container>
+
+
+        </md-content>
 
     </section>
 

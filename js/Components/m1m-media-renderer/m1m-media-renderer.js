@@ -4,7 +4,8 @@
 
 var angular    = require( "angular" ),
     CommModule  = require( "../../Services/CommModule.js" ),
-    template    = require( "./m1m-media-renderer.html" )
+    template    = require( "./m1m-media-renderer.html" ),
+    angularMaterial = require("angular-material")
     ;
 
 module.exports = "m1m-media-renderer-Module";
@@ -12,6 +13,7 @@ module.exports = "m1m-media-renderer-Module";
 
 function controller($scope, CommService) {
     var $ctrl = this;
+    $scope.vol= 50;
 
     console.log( "On construit un renderer" );
     this.play = function() {
@@ -25,7 +27,8 @@ function controller($scope, CommService) {
     }
 
     this.setVolume = function () {
-        CommService.setVolume( $ctrl.nf.id, 100);
+        CommService.setVolume( $ctrl.nf.id, $scope.vol);
+        console.log($scope.vol)
     }
 
     /*
@@ -39,7 +42,7 @@ function controller($scope, CommService) {
 
 controller.$inject = ["$scope", "CommService"];
 
-angular .module     ( module.exports, [CommModule] )
+angular .module     ( module.exports, [CommModule, angularMaterial] )
     .component  ( "m1mMediaRenderer", {
         controller  : controller,
         bindings    : {rd: "<"},
