@@ -1,26 +1,38 @@
+
 var angular    = require( "angular" ),
     CommModule  = require( "../../Services/CommModule.js" ),
-    template    = require( "./m1m-fil-ariane.html" )
+    template    = require( "./m1m-fil-ariane.html" ),
+    utils         = require( "../../Services/utils.js" )
     ;
 
-module.exports = "m1m-fil-ariane-Module";
+module.exports = "m1m-fil-ariane";
 
-function controller($scope, CommService, breadcrumbs) {
-    console.log( "On construit le fil d'ariane" );
+function controller($scope, CommService) {
     var ctrl = this;
-    $scope.breadcrumbs = breadcrumbs;
+
 }
 
-controller.$inject = ["$scope", "CommService","breadcrumbs"];
 
-angular .module     ( module.exports
-    , [CommModule, 'services.breadcrumbs'
+
+controller.$inject = ["$scope", "CommService"];
+
+var moduleAriane = angular .module     ( module.exports
+    , [CommModule
     ]
 )
     .component  ( "m1mFilAriane", {
         controller  : controller,
-        bindings    : {file: "<"},
+        bindings    : {directories: "<"},
         template   : template
     });
+
+
+moduleAriane.factory('factoryAriane', function() {
+    return {
+        alertA: function() {
+            alert('a');
+        }
+    };
+});
 
 

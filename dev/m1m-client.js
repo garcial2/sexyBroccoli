@@ -31869,13 +31869,15 @@
 	    ngDraggable 		= __webpack_require__( 67 ),
 	    template            = __webpack_require__( 68 ),
 	    modAngularMediaRenderer     = __webpack_require__( 69 ),
-	    modAngularMediaServer       = __webpack_require__( 71 );
+	    modAngularFilAriane    = __webpack_require__( 71 ),
+	    modAngularMediaServer       = __webpack_require__( 73 );
 
 	module.exports = "m1m-multimedia-manager-Module";
 	console.log( "Init of m1m-multimedia-manager-Module", CommModule, angularMaterial, ngDraggable);
 
-	function controller($scope, CommService) {
+	function controller($scope, CommService,$timeout, $mdSidenav) {
 	    var ctrl = this;
+	    ctrl.begin = true;
 
 	    console.log( "m1mMultimediaManager:", $scope, CommService );
 	    this.mediaRenderers = CommService.mediaRenderers;
@@ -31883,6 +31885,25 @@
 	    CommService.onupdate = function() {
 	        $scope.$applyAsync(); // Mise à jour du rendu
 	    };
+
+
+	    ctrl.dirAriane = [];
+
+	    this.addDir = function(dir) {
+	        var i = 0;
+	        for( i=ctrl.dirAriane.length-1; i>=0; i--) {
+	            if( ctrl.dirAriane[i].name == dir.name) ctrl.dirAriane.splice(i,1);
+	        }
+
+	        ctrl.dirAriane.push(dir);
+	        console.log("Ajout dir ariane");
+	        console.log(ctrl.dirAriane);
+	    }
+
+
+
+
+
 
 	    /*this.browse = function( mediaServerId, directoryId ) {
 	        CommService.browse( mediaServerId, directoryId ).then( function(data) {
@@ -31902,14 +31923,42 @@
 	        });
 	    }*/
 
-	    this.subscribe = function (mediaRendererId) {
-	        console.log("Suscribe to renderer,",mediaRendererId);
-	        return  utils.subscribeBrick(mediaRendererId, "eventUPnP",function (e) {
+	    this.subscribe = function (mediaRenderer) {
+	        console.log("Suscribe to renderer,",mediaRenderer.id);
+	        if(!ctrl.begin){
+	            ctrl.mediaRenderers.push(ctrl.selectedRenderer);
+	        }
+
+	        var i=0;
+
+	        for( i=ctrl.mediaRenderers.length-1; i>=0; i--) {
+	            if( ctrl.mediaRenderers[i].id == mediaRenderer.id) ctrl.mediaRenderers.splice(i,1);
+	        }
+
+	        ctrl.selectedRenderer = mediaRenderer;
+
+	        ctrl.begin = false;
+
+	        console.log("Liste des renderers :", ctrl.mediaRenderers);
+	        return  utils.subscribeBrick(mediaRenderer.id, "eventUPnP",function (e) {
 	            console.log(e);
 	    });
 	    }
+
+		/* DESIGN FUNCTIONS */ 
+		$scope.toggleLeft = buildToggler('left');
+		$scope.toggleRight = buildToggler('right');
+
+		function buildToggler(componentId) {
+			return function() {
+				$mdSidenav(componentId).toggle();
+	        	}
+	    	}
+		/* END DESIGN FUNCTIONS */
+
 	}
-	controller.$inject = ["$scope", "CommService"];
+
+	controller.$inject = ["$scope", "CommService", "$timeout", "$mdSidenav"  ];
 
 	angular .module     ( module.exports
 	                    ,   [ CommModule
@@ -31917,7 +31966,8 @@
 	                        , "ngDraggable"
 	                        , modAngularMediaRenderer
 	                        , modAngularMediaServer
-	                        ]
+	                        , modAngularFilAriane
+	                        , 'ngMaterial']
 	                    )
 	        .component  ( "m1mMultimediaManager", {
 	            controller  : controller,
@@ -77943,7 +77993,7 @@
 /* 68 */
 /***/ function(module, exports) {
 
-	module.exports = "<h2>{{$ctrl.title}}</h2>\n\n<md-content>\n    <h3>Liste des lecteurs UPnP/DLNA</h3>\n\n    <m1m-media-renderer\n            ng-repeat=\"renderer in $ctrl.mediaRenderers\"\n            rd=\"renderer\" ng-click=\"$ctrl.subscribe(renderer.id)\"\n    >\n    </m1m-media-renderer>\n</md-content>\n\n\n<section>\n    <h3>Liste des serveurs UPnP/DLNA</h3>\n\n    <m1m-media-server ng-repeat=\"server in $ctrl.mediaServers\" serv=\"server\">\n    </m1m-media-server>\n</section>\n\n<!--\n<browser-display nf=\"{{$ctrl.directories}}\">\n</browser-display>\n-->"
+	module.exports = "<body ng-cloak layout=\"column\">\n\n<!-- Container #1 (see wireframe) -->\n<md-toolbar layout=\"row\" class=\"md-toolbar-tools\">\n    <h2>{{$ctrl.title}}</h2>\n</md-toolbar>\n\n<div flex layout=\"column\" >\n\n<!-- Container #2 -->\n<div flex layout=\"row\" layout-xs=\"column\">\n\n    <!-- Container #3  md-is-locked-open=\"true\"   -->\n    <md-sidenav class=\"md-sidenav-left\" md-component-id=\"left\" md-whiteframe=\"4\">\n\n        <md-toolbar class=\"md-theme-dark\">\n            <h1 class=\"md-toolbar-tools\">\n                Les serveurs\n                <md-button ng-click=\"toggleLeft()\" class=\"md-accent\">\n                    X\n                </md-button>\n            </h1>\n        </md-toolbar>\n\n        <md-content layout-margin>\n\n            <m1m-media-server ng-click=\"$ctrl.addDir(server)\" ng-repeat=\"server in $ctrl.mediaServers\" serv=\"server\">\n            </m1m-media-server>\n\n            <md-button ng-repeat=\"obj in $ctrl.medias\" ng-click=\"$ctrl.loadMedia($ctrl.mediaRenderers[1].id,obj.serverId, obj.mediaId)\">\n                <div>{{obj.title}} </div>\n            </md-button>\n        </md-content>\n\n    </md-sidenav>\n\n\n    <md-content flex id=\"content\">\n        <h3>Liste des lecteurs UPnP/DLNA</h3>\n        <md-list>\n            <md-list-item ng-repeat=\"renderer in $ctrl.mediaRenderers\" ng-click=\"$ctrl.subscribe(renderer)\">{{renderer.name}}</md-list-item>\n            </m1m-media-renderer>\n        </md-list>\n\n\n    </md-content>\n\n    <!-- Container #4 -->\n    <md-content flex id=\"content\">\n        <section>\n            <h3>Liste des serveurs UPnP/DLNA</h3>\n\n            <md-list>\n                <m1m-media-server ng-dblclick=\"$ctrl.addDir(server)\"  ng-repeat=\"server in $ctrl.mediaServers\" serv=\"server\">\n                </m1m-media-server>\n            </md-list>\n\n        </section>\n\n        <div layout=\"column\" layout-align=\"top left\">\n\n            <div>\n                <md-button ng-click=\"toggleLeft()\" class=\"md-raised\">\n                    Voir les serveurs\n                </md-button>\n            </div>\n\n        </div>\n\n    </md-content>\n\n</div>\n</div>\n\n<div flex >\n    <md-content layout=\"column\" id=\"content\">\n        <h3>Lecteur choisi</h3>\n        <m1m-media-renderer  rd=\"$ctrl.selectedRenderer\">\n        </m1m-media-renderer>\n    </md-content>\n</div>\n\n</body>\n\n\n"
 
 /***/ },
 /* 69 */
@@ -77955,7 +78005,8 @@
 
 	var angular    = __webpack_require__( 8 ),
 	    CommModule  = __webpack_require__( 11 ),
-	    template    = __webpack_require__( 70 )
+	    template    = __webpack_require__( 70 ),
+	    angularMaterial = __webpack_require__(61)
 	    ;
 
 	module.exports = "m1m-media-renderer-Module";
@@ -77963,20 +78014,22 @@
 
 	function controller($scope, CommService) {
 	    var $ctrl = this;
+	    $scope.vol= 50;
 
 	    console.log( "On construit un renderer" );
 	    this.play = function() {
-	        CommService.play( $ctrl.nf.id );
+	        CommService.play( $ctrl.rd.id );
 	    }
 	    this.stop = function () {
-	        CommService.stop( $ctrl.nf.id );
+	        CommService.stop( $ctrl.rd.id );
 	    }
 	    this.pause = function () {
-	        CommService.pause( $ctrl.nf.id );
+	        CommService.pause( $ctrl.rd.id );
 	    }
 
 	    this.setVolume = function () {
-	        CommService.setVolume( $ctrl.nf.id, 100);
+	        CommService.setVolume( $ctrl.rd.id, $scope.vol);
+	        console.log($scope.vol)
 	    }
 
 	    /*
@@ -77986,16 +78039,11 @@
 	         $scope.$applyAsync();
 	         });
 	     }*/
-
-
-
 	}
 
 	controller.$inject = ["$scope", "CommService"];
 
-
-
-	angular .module     ( module.exports, [CommModule] )
+	angular .module     ( module.exports, [CommModule, angularMaterial] )
 	    .component  ( "m1mMediaRenderer", {
 	        controller  : controller,
 	        bindings    : {rd: "<"},
@@ -78006,10 +78054,60 @@
 /* 70 */
 /***/ function(module, exports) {
 
-	module.exports = "<section>\n\n    <h3> LECTEUR : {{$ctrl.rd.name}}</h3>\n    <section>\n        <button ng-click=\"$ctrl.play()\">PLAY</button>\n        <button ng-click=\"$ctrl.pause()\">PAUSE</button>\n        <button ng-click=\"$ctrl.stop()\">STOP</button>\n\n    </section>\n\n</section>\n"
+	module.exports = "<section>\n    <h3> {{$ctrl.rd.name}}</h3>\n    <section>\n\n        <md-content style=\"display: inline-block!important;width: 30%\">\n            <md-button ng-click=\"$ctrl.play()\" class=\"md-fab\" aria-label=\"play\">\n                <md-icon md-svg-src=\"audio_play.svg\"></md-icon>\n            </md-button>\n\n            <md-button ng-click=\"$ctrl.pause()\" class=\"md-fab\" aria-label=\"pause\">\n                <md-icon md-svg-src=\"audio_pause.svg\"></md-icon>\n            </md-button>\n            <md-button ng-click=\"$ctrl.stop()\" class=\"md-fab\" aria-label=\"stop\">\n                <md-icon md-svg-src=\"audio_stop.svg\"></md-icon>\n            </md-button>\n        </md-content>\n\n\n        <md-content style=\"display: inline-block!important;width: 40%\">\n            <md-slider-container flex style=\"width: 90%;margin: 2px\">\n                <md-input-container>\n                    <input flex type=\"number\" min=\"0\" max=\"100\" ng-model=\"vol\" aria-label=\"volume\" aria-controls=\"volume-slider\">\n                </md-input-container>\n                <md-slider ng-model=\"vol\" min=\"0\" max=\"100\" aria-label=\"volume\" id=\"volume-slider\" class=\"md-accent\"\n                           md-range></md-slider>\n                </md-slider>\n                <h5>Volume</h5>\n            </md-slider-container>\n\n\n        </md-content>\n\n    </section>\n\n</section>\n"
 
 /***/ },
 /* 71 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var angular    = __webpack_require__( 8 ),
+	    CommModule  = __webpack_require__( 11 ),
+	    template    = __webpack_require__( 72 ),
+	    utils         = __webpack_require__( 12 )
+	    ;
+
+	module.exports = "m1m-fil-ariane";
+
+	function controller($scope, CommService) {
+	    var ctrl = this;
+
+	}
+
+
+
+	controller.$inject = ["$scope", "CommService"];
+
+	var moduleAriane = angular .module     ( module.exports
+	    , [CommModule
+	    ]
+	)
+	    .component  ( "m1mFilAriane", {
+	        controller  : controller,
+	        bindings    : {directories: "<"},
+	        template   : template
+	    });
+
+
+	moduleAriane.factory('factoryAriane', function() {
+	    return {
+	        alertA: function() {
+	            alert('a');
+	        }
+	    };
+	});
+
+
+
+
+/***/ },
+/* 72 */
+/***/ function(module, exports) {
+
+	module.exports = "<h4 style=\"display: inline-block\">Fil Ariane :</h4>\n\n<div style=\"display: inline-block\" ng-repeat=\"d in $ctrl.directories\">\n    <p>{{d.name}} > </p>\n</div>"
+
+/***/ },
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -78020,10 +78118,11 @@
 
 	var angular    = __webpack_require__( 8 ),
 	    CommModule  = __webpack_require__( 11 ),
-	    template    = __webpack_require__( 72 ),
+	    template    = __webpack_require__( 74 ),
 	    utils         = __webpack_require__( 12 ),
-	    modAngularMediaFolder      = __webpack_require__( 73 ),
-	    modAngularMediaFile      = __webpack_require__( 75 )
+	    modAngularMediaFolder      = __webpack_require__( 75 ),
+	    modAngularFilAriane    = __webpack_require__( 71 ),
+	    modAngularMediaFile      = __webpack_require__( 77 )
 	    ;
 
 	module.exports = "m1m-media-server-Module";
@@ -78031,13 +78130,17 @@
 	function controller($scope, CommService) {
 	    console.log( "On construit un server" );
 	    var ctrl = this;
+	    ctrl.begin = true;
+	    ctrl.dirAriane = [];
 
 	    this.browse = function( mediaServerId, directoryId ) {
+	        /*modAngularFilAriane.directories.push(directoryId);*/
 	        CommService.browse( mediaServerId, directoryId ).then( function(data) {
 	            console.log( "Browse", mediaServerId, directoryId, "=>", data );
 	            ctrl.directories = data.directories;
 	            ctrl.medias = data.medias;
 	            $scope.$applyAsync();
+
 	        });
 	    }
 
@@ -78056,6 +78159,7 @@
 	                    , [CommModule
 	                    , modAngularMediaFolder
 	                    , modAngularMediaFile
+	                    ,modAngularFilAriane
 	                    ]
 	                    )
 	    .component  ( "m1mMediaServer", {
@@ -78065,21 +78169,19 @@
 	    });
 
 
-
-
 /***/ },
-/* 72 */
+/* 74 */
 /***/ function(module, exports) {
 
-	module.exports = "<section>\n    <h4 ng-dblclick=\"$ctrl.browse($ctrl.serv.id)\">{{$ctrl.serv.name}}</h4>\n\n    <m1m-media-folder  ng-repeat=\"obj in $ctrl.directories\" ng-dblclick=\"$ctrl.browse(obj.serverId, obj.directory)\" fold=\"obj\" style=\"display:block\">\n    </m1m-media-folder>\n\n    <m1m-media-file ng-repeat=\"obj in $ctrl.medias\" file=\"obj\"> </m1m-media-file>\n</section>\n\n\n\n\n"
+	module.exports = "<md-list-item>\n    <h4 ng-dblclick=\"$ctrl.browse($ctrl.serv.id)\">{{$ctrl.serv.name}}</h4>\n\n    <m1m-media-folder  ng-repeat=\"obj in $ctrl.directories\" ng-dblclick=\"$ctrl.browse(obj.serverId, obj.directory)\" fold=\"obj\" style=\"display:block\">\n    </m1m-media-folder>\n\n    <m1m-media-file ng-repeat=\"obj in $ctrl.medias\" file=\"obj\"> </m1m-media-file>\n</md-list-item>\n\n\n\n\n"
 
 /***/ },
-/* 73 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var angular    = __webpack_require__( 8 ),
 	    CommModule  = __webpack_require__( 11 ),
-	    template    = __webpack_require__( 74 )
+	    template    = __webpack_require__( 76 )
 	    ;
 
 	module.exports = "m1m-media-folder-Module";
@@ -78112,18 +78214,18 @@
 	    });
 
 /***/ },
-/* 74 */
+/* 76 */
 /***/ function(module, exports) {
 
-	module.exports = "<a ng-dblclick=\"$ctrl.browse($ctrl.fold.serverId, $ctrl.fold.directory)\">\n    <img src=\"{{$ctrl.fold.iconURL}}\" alt=\"{{$ctrl.fold.name}}\">\n</a>"
+	module.exports = "<a ng-dblclick=\"$ctrl.browse($ctrl.fold.serverId, $ctrl.fold.directory)\">\n    <img src=\"/images/folder_256.png\" alt=\"{{$ctrl.fold.name}}\">\n</a>"
 
 /***/ },
-/* 75 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var angular    = __webpack_require__( 8 ),
 	    CommModule  = __webpack_require__( 11 ),
-	    template    = __webpack_require__( 76 )
+	    template    = __webpack_require__( 78 )
 	    ;
 
 	module.exports = "m1m-media-file-Module";
@@ -78135,7 +78237,6 @@
 
 	    this.loadMedia = function(mediaRendererId, mediaServerId, itemId){
 	        CommService.loadMedia(mediaRendererId,mediaServerId,itemId).then(function (data) {
-	            //var callb = function(obj){console.log(obj);}
 	            console.log( "Load media", mediaRendererId, mediaServerId, mediaServerId, itemId, "=>", data );
 	            CommService.play(mediaRendererId);
 	            $scope.$applyAsync();
@@ -78157,7 +78258,7 @@
 	    });
 
 /***/ },
-/* 76 */
+/* 78 */
 /***/ function(module, exports) {
 
 	module.exports = "<a   ng-dblclick=\"$ctrl.loadMedia($ctrl.mediaRenderers[1].id,$ctrl.file.serverId, $ctrl.file.mediaId)\" style=\"display:block; color:darkslateblue\">\n    {{$ctrl.file.title}}\n</a>"

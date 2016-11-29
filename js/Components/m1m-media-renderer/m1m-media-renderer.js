@@ -17,17 +17,17 @@ function controller($scope, CommService) {
 
     console.log( "On construit un renderer" );
     this.play = function() {
-        CommService.play( $ctrl.nf.id );
+        CommService.play( $ctrl.rd.id );
     }
     this.stop = function () {
-        CommService.stop( $ctrl.nf.id );
+        CommService.stop( $ctrl.rd.id );
     }
     this.pause = function () {
-        CommService.pause( $ctrl.nf.id );
+        CommService.pause( $ctrl.rd.id );
     }
 
     this.setVolume = function () {
-        CommService.setVolume( $ctrl.nf.id, $scope.vol);
+        CommService.setVolume( $ctrl.rd.id, $scope.vol);
         console.log($scope.vol)
     }
 
