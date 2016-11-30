@@ -1,85 +1,75 @@
-<body ng-cloak layout="column">
+<!-- Container #3  md-is-locked-open="true"   -->
+<md-sidenav  class="md-sidenav-left" md-component-id="left" md-whiteframe="4">
 
-<!-- Container #1 (see wireframe) -->
-<md-toolbar layout="row" class="md-toolbar-tools">
-    <h2>{{$ctrl.title}}</h2>
-</md-toolbar>
-
-<div flex layout="column" >
-
-<!-- Container #2 -->
-<div flex layout="row" layout-xs="column">
-
-    <!-- Container #3  md-is-locked-open="true"   -->
-    <md-sidenav class="md-sidenav-left" md-component-id="left" md-whiteframe="4">
-
-        <md-toolbar class="md-theme-dark">
-            <h1 class="md-toolbar-tools">
-                Les serveurs
-                <md-button ng-click="toggleLeft()" class="md-accent">
-                    X
-                </md-button>
-            </h1>
-        </md-toolbar>
-
-        <md-content layout-margin>
-
-            <m1m-media-server ng-click="$ctrl.addDir(server)" ng-repeat="server in $ctrl.mediaServers" serv="server">
-            </m1m-media-server>
-
-            <md-button ng-repeat="obj in $ctrl.medias" ng-click="$ctrl.loadMedia($ctrl.mediaRenderers[1].id,obj.serverId, obj.mediaId)">
-                <div>{{obj.title}} </div>
+    <md-toolbar class="md-theme-dark">
+        <h1 class="md-toolbar-tools">
+            Les serveurs
+            <md-button ng-click="toggleLeft()" class="md-accent">
+                X
             </md-button>
-        </md-content>
+        </h1>
+    </md-toolbar>
 
-    </md-sidenav>
-
-
-    <md-content flex id="content">
-        <h3>Liste des lecteurs UPnP/DLNA</h3>
-        <md-list>
-            <md-list-item ng-repeat="renderer in $ctrl.mediaRenderers" ng-click="$ctrl.subscribe(renderer)">{{renderer.name}}</md-list-item>
-            </m1m-media-renderer>
-        </md-list>
-
-
+    <md-content layout-margin>
+        <div ng-repeat="server in $ctrl.mediaServers" serv="server" ng-click="$ctrl.selectServer(server)">{{server.name}}</div>
     </md-content>
 
-    <!-- Container #4 -->
-    <md-content flex id="content">
-        <section>
-            <h3>Liste des serveurs UPnP/DLNA</h3>
+</md-sidenav>
 
-            <md-list>
-                <m1m-media-server ng-dblclick="$ctrl.addDir(server)"  ng-repeat="server in $ctrl.mediaServers" serv="server">
-                </m1m-media-server>
-            </md-list>
+<md-content layout="column" class="content-manager md-padding" layout-align="center stretch">
 
-        </section>
+    <!-- Container #1 (see wireframe) -->
+    <md-toolbar layout="row" class="md-toolbar-tools">
+        <h2>{{$ctrl.title}}</h2>
+    </md-toolbar>
+    <m1m-fil-ariane directories="$ctrl.dirAriane"></m1m-fil-ariane>
 
-        <div layout="column" layout-align="top left">
+    <div flex layout="column" class="servRend" >
 
-            <div>
-                <md-button ng-click="toggleLeft()" class="md-raised">
-                    Voir les serveurs
-                </md-button>
-            </div>
+        <!-- Container #2 -->
+        <div flex layout="row" layout-xs="column">
+
+
+
+            <md-content flex id="content">
+                <h3>Liste des lecteurs UPnP/DLNA</h3>
+                <md-list>
+                    <md-list-item ng-repeat="renderer in $ctrl.mediaRenderers" ng-click="$ctrl.subscribe(renderer)">{{renderer.name}}</md-list-item>
+                    </m1m-media-renderer>
+                </md-list>
+
+
+            </md-content>
+
+            <!-- Container #4 -->
+            <md-content flex id="content" class="serverBox">
+                <section>
+                    <h3>Serveur UPnP/DLNA</h3>
+
+                    <m1m-media-server serv="$ctrl.selectedServer"></m1m-media-server>
+                </section>
+
+                <div layout="column" layout-align="top left">
+
+                    <div>
+                        <md-button ng-click="toggleLeft()" class="md-raised">
+                            Voir les serveurs
+                        </md-button>
+                    </div>
+
+                </div>
+
+            </md-content>
 
         </div>
+    </div>
 
-    </md-content>
-
-</div>
-</div>
-
-<div flex >
-    <md-content layout="column" id="content">
+    <div layout="column" layout-align="center stretch">
         <h3>Lecteur choisi</h3>
         <m1m-media-renderer  rd="$ctrl.selectedRenderer">
         </m1m-media-renderer>
-    </md-content>
-</div>
+    </div>
 
-</body>
+</md-content>
 
 

@@ -15,7 +15,7 @@ var angular    = require( "angular" ),
 
 module.exports = "m1m-media-server-Module";
 
-function controller($scope, CommService) {
+function controller($scope, CommService, Ariane) {
     console.log( "On construit un server" );
     var ctrl = this;
     ctrl.begin = true;
@@ -41,7 +41,7 @@ function controller($scope, CommService) {
 
 }
 
-controller.$inject = ["$scope", "CommService"];
+controller.$inject = ["$scope", "CommService", "Ariane"];
 
 angular .module     ( module.exports
                     , [CommModule

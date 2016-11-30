@@ -1,0 +1,22 @@
+body{
+    background-color: #404541;
+}
+
+.content-manager{
+    max-height: 99%;
+}
+
+md-slider-container md-input-container input[type="number"]{
+    padding-left: 0!important;
+}
+
+.servRend{
+    border-top: 2px solid grey;
+    border-bottom: 2px solid grey;
+}
+
+.serverBox {
+    border-left: 2px solid grey;
+    padding-left : 10px;
+    margin-left: 15px;
+}

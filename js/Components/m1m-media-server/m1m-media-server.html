@@ -1,11 +1,15 @@
-<md-list-item>
+<div flex layout="column">
     <h4 ng-dblclick="$ctrl.browse($ctrl.serv.id)">{{$ctrl.serv.name}}</h4>
 
-    <m1m-media-folder  ng-repeat="obj in $ctrl.directories" ng-dblclick="$ctrl.browse(obj.serverId, obj.directory)" fold="obj" style="display:block">
-    </m1m-media-folder>
+    <md-content layout="row" layout-wrap>
+        <m1m-media-folder  ng-repeat="obj in $ctrl.directories" ng-dblclick="$ctrl.browse(obj.serverId, obj.directory)" fold="obj" flex="30">
+        </m1m-media-folder>
 
-    <m1m-media-file ng-repeat="obj in $ctrl.medias" file="obj"> </m1m-media-file>
-</md-list-item>
+        <m1m-media-file ng-repeat="obj in $ctrl.medias" file="obj" flex="30"> </m1m-media-file>
+    </md-content>
+
+</div>
+
 
 
 

@@ -9,12 +9,20 @@ var angular		        = require( "angular" ),
     modAngularMediaServer       = require( "../m1m-media-server/m1m-media-server.js" );
 
 module.exports = "m1m-multimedia-manager-Module";
+
 console.log( "Init of m1m-multimedia-manager-Module", CommModule, angularMaterial, ngDraggable);
 
-function controller($scope, CommService,$timeout, $mdSidenav) {
+function controller($scope, CommService,$timeout, $mdSidenav,Ariane) {
     var ctrl = this;
     ctrl.begin = true;
+    ctrl.selectedServer;
 
+    //this.addToAriane = function(dir){
+        //$scope.$broadcast("blabla", {dir: dir});
+        //Ariane.addDir(dir);
+        //console.log("mklegmzklregjtlrhjyln klnknhn hn")
+        //this.dirAriane = Ariane.dirAriane;
+    //}
     console.log( "m1mMultimediaManager:", $scope, CommService );
     this.mediaRenderers = CommService.mediaRenderers;
     this.mediaServers   = CommService.mediaServers;
@@ -23,41 +31,12 @@ function controller($scope, CommService,$timeout, $mdSidenav) {
     };
 
 
-    ctrl.dirAriane = [];
+    this.selectServer = function (server) {
+        ctrl.selectedServer = server;
+        console.log("SERVEUR CHOISI",server);
+        $mdSidenav('left').toggle();
 
-    this.addDir = function(dir) {
-        var i = 0;
-        for( i=ctrl.dirAriane.length-1; i>=0; i--) {
-            if( ctrl.dirAriane[i].name == dir.name) ctrl.dirAriane.splice(i,1);
-        }
-
-        ctrl.dirAriane.push(dir);
-        console.log("Ajout dir ariane");
-        console.log(ctrl.dirAriane);
     }
-
-
-
-
-
-
-    /*this.browse = function( mediaServerId, directoryId ) {
-        CommService.browse( mediaServerId, directoryId ).then( function(data) {
-            console.log( "Browse", mediaServerId, directoryId, "=>", data );
-            ctrl.directories = data.directories;
-            ctrl.medias = data.medias;
-            $scope.$applyAsync();
-        });
-    }
-
-    this.loadMedia = function(mediaRendererId, mediaServerId, itemId){
-        CommService.loadMedia(mediaRendererId,mediaServerId,itemId).then(function (data) {
-            //var callb = function(obj){console.log(obj);}
-            console.log( "Load media", mediaServerId, mediaServerId, itemId, "=>", data );
-            CommService.play(mediaRendererId);
-            $scope.$applyAsync();
-        });
-    }*/
 
     this.subscribe = function (mediaRenderer) {
         console.log("Suscribe to renderer,",mediaRenderer.id);
@@ -78,7 +57,7 @@ function controller($scope, CommService,$timeout, $mdSidenav) {
         console.log("Liste des renderers :", ctrl.mediaRenderers);
         return  utils.subscribeBrick(mediaRenderer.id, "eventUPnP",function (e) {
             console.log(e);
-    });
+        });
     }
 
 	/* DESIGN FUNCTIONS */ 
@@ -94,7 +73,7 @@ function controller($scope, CommService,$timeout, $mdSidenav) {
 
 }
 
-controller.$inject = ["$scope", "CommService", "$timeout", "$mdSidenav"  ];
+controller.$inject = ["$scope", "CommService", "$timeout", "$mdSidenav","Ariane"  ];
 
 angular .module     ( module.exports
                     ,   [ CommModule
